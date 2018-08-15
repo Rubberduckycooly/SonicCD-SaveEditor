@@ -414,5 +414,27 @@ namespace Sonic_CD_SaveED
             AboutForm frm = new AboutForm();
             frm.ShowDialog();
         }
+
+        private void openFromSteamAccountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (HedgeModManager.Steam.SteamLocation == null)
+                HedgeModManager.Steam.Init();
+            var form = new HedgeModManager.SLWSaveForm();
+            form.ShowDialog();
+            if (!string.IsNullOrWhiteSpace(form.SID))
+            {
+                //200940
+                string path = Path.Combine(HedgeModManager.Steam.SteamLocation, "userdata", form.SID, "200940", "local");
+                if (!Directory.Exists(path))
+                {
+                    MessageBox.Show("Could not Find Sonic CD Data in user Profile!", "Data Not Forund", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                path = Path.Combine(path, "Sdata.bin");
+                Filepath = path;
+                SaveData = new RSDKv3.SaveFiles(path);
+                RefreshUI();
+            }
+        }
     }
 }
