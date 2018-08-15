@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sonic-CD-SaveED")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Sonic CD Save Editor")]
+[assembly: AssemblyDescription("A Save Editor for Sonic CD (2011)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Sonic-CD-SaveED")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("Rubberduckycooly & Beta Angel")]
+[assembly: AssemblyProduct("Sonic CD Save Editor")]
+[assembly: AssemblyCopyright("Copyright © Rubberduckycooly & Beta Angel 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
