@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using zlib;
 
-namespace RSDKv3
+namespace RSDKv2
 {
     public class Reader : BinaryReader
     {
@@ -64,6 +64,12 @@ namespace RSDKv3
             byte[] bytes = ReadBytes(4);
             Array.Reverse(bytes);
             return BitConverter.ToUInt32(bytes, 0);
+        }
+
+        public string GetFilename()
+        {
+            var fileStream = BaseStream as FileStream;
+            return fileStream.Name;
         }
 
         public string ReadRSDKString()

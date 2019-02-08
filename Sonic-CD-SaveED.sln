@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sonic-CD-SaveED", "Sonic-CD-SaveED\Sonic-CD-SaveED.csproj", "{E9AF2D39-98CC-4EE6-BF10-5593747CB256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSDKv3", "RSDKv3\RSDKv3.csproj", "{B41A3858-7E66-4755-9F50-94EA021155B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSDKv2", "RSDKv2\RSDKv2.csproj", "{B41A3858-7E66-4755-9F50-94EA021155B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

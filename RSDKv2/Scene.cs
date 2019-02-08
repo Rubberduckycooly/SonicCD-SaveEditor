@@ -8,19 +8,93 @@ using System.Threading.Tasks;
 This Loader uses code from the programs: "Retro Engine Map Viewer" and TaxEd by -- and Nextvolume respectivley 
 */
 
-namespace RSDKv3
+namespace RSDKv2
 {
-    public class Level
+    public class Scene
     {
-        public string Title { get; set; }
-        public ushort[][] MapLayout { get; set; }
+        /// <summary>
+        /// the Stage Name (what the titlecard displays)
+        /// </summary>
+        public string Title = "Stage";
+
+        /// <summary>
+        /// the array of Chunk IDs for the stage
+        /// </summary>
+        public ushort[][] MapLayout;
 
         /* Values for the "Display Bytes" */
+        /// <summary>
+        /// Active Layer 0, does ???
+        /// </summary>
         public byte ActiveLayer0 = 1; //Usually BG Layer
+        /// <summary>
+        /// Active Layer 0, does ???
+        /// </summary>
         public byte ActiveLayer1 = 9; //Unknown
+        /// <summary>
+        /// Active Layer 0, does ???
+        /// </summary>
         public byte ActiveLayer2 = 0; //Usually Foreground (Map) Layer
+        /// <summary>
+        /// Active Layer 0, does ???
+        /// </summary>
         public byte ActiveLayer3 = 0; //Usually Foreground (Map) Layer
+        /// <summary>
+        /// The Midpoint Layer does ???
+        /// </summary>
         public byte Midpoint = 3;
+
+        /// <summary>
+        /// the starting X Boundary, it's always 0 though
+        /// </summary>
+        public int xBoundary1
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        /// <summary>
+        /// the starting Y Boundary, it's always 0 though
+        /// </summary>
+        public int yBoundary1
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        /// <summary>
+        /// the ending X Boundary, it's the value (in pixels) for the stage width
+        /// </summary>
+        public int xBoundary2
+        {
+            get
+            {
+                return width << 7;
+            }
+        }
+        /// <summary>
+        /// the ending Y Boundary, it's the value (in pixels) for the stage height
+        /// </summary>
+        public int yBoundary2
+        {
+            get
+            {
+                return height << 7;
+            }
+        }
+        /// <summary>
+        /// The water level for the stage, by default it will be below the stage, so it's kinda useless lol
+        /// </summary>
+        public int WaterLevel
+        {
+            get
+            {
+                return yBoundary2 + 128;
+            }
+        }
+
 
         //Byte 5: Stage.MidPoint
         //if it's 0 then nothing but the objects are drawn
@@ -28,27 +102,52 @@ namespace RSDKv3
         // 3 is default
         // 4 or above draws tiles that are on the low layer on the high layer
 
+        /// <summary>
+        /// the list of objects in the stage
+        /// </summary>
         public List<Object> objects = new List<Object>();
+        /// <summary>
+        /// a list of names for each Object Type
+        /// </summary>
         public List<string> objectTypeNames = new List<string>();
 
-        public int width, height;
+        /// <summary>
+        /// stage width (in chunks)
+        /// </summary>
+        public ushort width;
+        /// <summary>
+        /// stage height (in chunks)
+        /// </summary>
+        public ushort height;
 
-        public Level()
+        /// <summary>
+        /// the Max amount of objects that can be in a single stage
+        /// </summary>
+        public int MaxObjectCount
+        {
+            get
+            {
+                return 1056;
+            }
+        }
+
+        public Scene()
+        {
+            MapLayout = new ushort[1][];
+            MapLayout[0] = new ushort[1];
+        }
+
+        public Scene(string filename) : this(new Reader(filename))
         {
 
         }
 
-        public Level(string filename) : this(new Reader(filename))
+        public Scene(System.IO.Stream stream) : this(new Reader(stream))
         {
 
         }
 
-        public Level(System.IO.Stream stream) : this(new Reader(stream))
-        {
-
-        }
-
-        public Level(Reader reader)
+        public Scene(Reader reader)
         {
             Title = reader.ReadRSDKString();
             //Console.WriteLine(Title);
@@ -66,10 +165,9 @@ namespace RSDKv3
 
 
             // Map width in 128 pixel units
-            // In RSDKv3, it's one byte long
+            // In RSDKv2, it's one byte long
             width = buffer[0];
             height = buffer[1];
-            //Console.WriteLine("Width " + width + " Height " + height);
 
             MapLayout = new ushort[height][];
             for (int i = 0; i < height; i++)
@@ -85,12 +183,11 @@ namespace RSDKv3
                     // Big-Endian in RSDKv2 and RSDKv3
                     reader.Read(buffer, 0, 2); //Read size
                     MapLayout[y][x] = (ushort)(buffer[1] + (buffer[0] << 8));
-                    //Console.WriteLine(MapLayout[y][x]);
                 }
             }
 
 
-            // Read number of object types, Only RSDKv2 and RSDKv3 support this feature		
+            // Read number of object types, Only RSDKv1 and RSDKv2 support this feature		
             int ObjTypeCount = reader.ReadByte();
 
             for (int n = 0; n < ObjTypeCount; n++)
@@ -98,7 +195,6 @@ namespace RSDKv3
                 string name = reader.ReadRSDKString();
 
                 objectTypeNames.Add(name);
-                //Console.WriteLine(name);
             }
             // Read object data
 
@@ -108,31 +204,12 @@ namespace RSDKv3
             ObjCount = reader.ReadByte() << 8;
             ObjCount |= reader.ReadByte();
 
-            //Console.WriteLine("Object Count = " + ObjCount + " Also the reader pos =" + reader.Pos);
-
-            int obj_type = 0;
-            int obj_subtype = 0;
-            int obj_xPos = 0;
-            int obj_yPos = 0;
+            Object.cur_id = 0;
 
             for (int n = 0; n < ObjCount; n++)
             {
-                // Object type, 1 byte, unsigned
-                obj_type = reader.ReadByte();
-                // Object subtype, 1 byte, unsigned
-                obj_subtype = reader.ReadByte();
-
-                // X Position, 2 bytes, big-endian, signed			
-                obj_xPos = reader.ReadSByte() << 8;
-                obj_xPos |= reader.ReadByte();
-
-                // Y Position, 2 bytes, big-endian, signed
-                obj_yPos = reader.ReadSByte() << 8;
-                obj_yPos |= reader.ReadByte();
-
                 // Add object
-                objects.Add(new Object(obj_type, obj_subtype, obj_xPos, obj_yPos));
-                //Console.WriteLine(n + " Obj Values: Type: " + obj_type + ", Subtype: " + obj_subtype + ", Xpos = " + obj_xPos + ", Ypos = " + obj_yPos);
+                objects.Add(new Object(reader));
             }
             reader.Close();
         }
@@ -146,45 +223,25 @@ namespace RSDKv3
         public void Write(System.IO.Stream stream)
         {
             using (Writer writer = new Writer(stream))
-                this.Write(writer);
+                Write(writer);
         }
 
         internal void Write(Writer writer)
         {
-
             //Checks To Make Sure the Data Is Valid For Saving
 
-            if (this.width > 255)
-                throw new Exception("Cannot save as Type v1. Width in tiles > 255");
+            if (width > 255)
+                throw new Exception("Cannot save as Type v2. Width in tiles > 255");
 
-            if (this.height > 255)
-                throw new Exception("Cannot save as Type v1. Height in tiles > 255");
+            if (height > 255)
+                throw new Exception("Cannot save as Type v2. Height in tiles > 255");
 
             int num_of_objects = objects.Count;
 
-            if (num_of_objects > 65535)
-                throw new Exception("Cannot save as Type v1. Number of objects > 65535");
-
-            for (int n = 0; n < num_of_objects; n++)
+            if (num_of_objects >= MaxObjectCount)
             {
-                Object obj = objects[n];
-
-                int obj_type = obj.getType();
-                int obj_subtype = obj.getSubtype();
-                int obj_xPos = obj.getXPos();
-                int obj_yPos = obj.getYPos();
-
-                if (obj_type > 255)
-                    throw new Exception("Cannot save as Type v1. Object type > 255");
-
-                if (obj_subtype > 255)
-                    throw new Exception("Cannot save as Type v1. Object subtype > 255");
-
-                if (obj_xPos < -32768 || obj_xPos > 32767)
-                    throw new Exception("Cannot save as Type v1. Object X Position can't fit in 16-bits");
-
-                if (obj_yPos < -32768 || obj_yPos > 32767)
-                    throw new Exception("Cannot save as Type v1. Object Y Position can't fit in 16-bits");
+                Console.WriteLine("Object Count > Max Objects!");
+                return;
             }
 
             // Write zone name		
@@ -198,14 +255,14 @@ namespace RSDKv3
             writer.Write(Midpoint);
 
             // Write width and height
-            writer.Write((byte)this.width);
-            writer.Write((byte)this.height);
+            writer.Write((byte)width);
+            writer.Write((byte)height);
 
             // Write tile map
 
-            for (int h = 0; h < this.height; h++)
+            for (int h = 0; h < height; h++)
             {
-                for (int w = 0; w < this.width; w++)
+                for (int w = 0; w < width; w++)
                 {
                     writer.Write((byte)(MapLayout[h][w] >> 8));
                     writer.Write((byte)(MapLayout[h][w] & 0xff));
@@ -213,7 +270,7 @@ namespace RSDKv3
             }
 
             // Write number of object type names
-            int num_of_objtype_names = this.objectTypeNames.Count;
+            int num_of_objtype_names = objectTypeNames.Count;
 
             writer.Write((byte)(num_of_objtype_names));
 
@@ -228,24 +285,14 @@ namespace RSDKv3
             writer.Write((byte)(num_of_objects >> 8));
             writer.Write((byte)(num_of_objects & 0xFF));
 
+            objects = objects.OrderBy(o => o.id).ToList();
+
             // Write object data
             for (int n = 0; n < num_of_objects; n++)
             {
                 Object obj = objects[n];
 
-                int obj_type = obj.type;
-                int obj_subtype = obj.subtype;
-                int obj_xPos = obj.xPos;
-                int obj_yPos = obj.yPos;
-
-                writer.Write((byte)(obj_type));
-                writer.Write((byte)(obj_subtype));
-
-                writer.Write((byte)(obj_xPos >> 8));
-                writer.Write((byte)(obj_xPos & 0xFF));
-
-                writer.Write((byte)(obj_yPos >> 8));
-                writer.Write((byte)(obj_yPos & 0xFF));
+                obj.Write(writer);
             }
             writer.Close();
         }

@@ -107,9 +107,9 @@
     <Content Include="sonic_CD.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RSDKv3\RSDKv3.csproj">
+    <ProjectReference Include="..\RSDKv2\RSDKv2.csproj">
       <Project>{b41a3858-7e66-4755-9f50-94ea021155b6}</Project>
-      <Name>RSDKv3</Name>
+      <Name>RSDKv2</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

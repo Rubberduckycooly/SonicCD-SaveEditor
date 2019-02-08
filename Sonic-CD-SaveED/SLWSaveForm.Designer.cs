@@ -37,19 +37,21 @@
             // 
             this.label.AutoSize = true;
             this.label.Font = new System.Drawing.Font("Segoe UI", 17F);
-            this.label.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label.Location = new System.Drawing.Point(53, 9);
-            this.label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label.Location = new System.Drawing.Point(71, 11);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(268, 31);
+            this.label.Size = new System.Drawing.Size(332, 40);
             this.label.TabIndex = 3;
             this.label.Text = "Please select an account ";
             // 
             // listView1
             // 
-            this.listView1.Location = new System.Drawing.Point(12, 43);
+            this.listView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.listView1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.listView1.Location = new System.Drawing.Point(16, 53);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(368, 247);
+            this.listView1.Size = new System.Drawing.Size(489, 303);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.ListView1_DrawItem);
@@ -59,9 +61,10 @@
             this.Button_Install.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Button_Install.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.Button_Install.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.Button_Install.Location = new System.Drawing.Point(12, 296);
+            this.Button_Install.Location = new System.Drawing.Point(16, 364);
+            this.Button_Install.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Button_Install.Name = "Button_Install";
-            this.Button_Install.Size = new System.Drawing.Size(368, 35);
+            this.Button_Install.Size = new System.Drawing.Size(491, 43);
             this.Button_Install.TabIndex = 5;
             this.Button_Install.Text = "OK";
             this.Button_Install.UseVisualStyleBackColor = true;
@@ -69,14 +72,15 @@
             // 
             // SLWSaveForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(392, 343);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.ClientSize = new System.Drawing.Size(523, 422);
             this.Controls.Add(this.Button_Install);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SLWSaveForm";

@@ -14,9 +14,7 @@ namespace Sonic_CD_SaveED
     public partial class Mainform : Form
     {
 
-        public RSDKv3.SaveFiles SaveData;
-
-        int CurSave = 0;
+        public RSDKv2.SaveFiles SaveData;
 
         string Filepath;
 
@@ -34,7 +32,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].CharacterID = CharLB.SelectedIndex;
+                SaveData.CharacterID = CharLB.SelectedIndex;
             }        
         }
 
@@ -52,7 +50,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].LevelID = StageList.SelectedIndex;
+                SaveData.ZoneID = StageList.SelectedIndex;
             }          
         }
 
@@ -70,7 +68,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].Lives = (int)LivesNUD.Value;
+                SaveData.Lives = (int)LivesNUD.Value;
             }
             
         }
@@ -94,7 +92,7 @@ namespace Sonic_CD_SaveED
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 Filepath = dlg.FileName;
-                SaveData = new RSDKv3.SaveFiles(dlg.FileName);
+                SaveData = new RSDKv2.SaveFiles(dlg.FileName);
                 RefreshUI();
             }
         }
@@ -109,31 +107,23 @@ namespace Sonic_CD_SaveED
                 MusNUD.Value = SaveData.MusVolume;
                 SFXNUD.Value = SaveData.SFXVolume;
                 TailsUnlockBox.Checked = SaveData.TailsUnlocked;
-                GlobalUnkownNUD.Value = SaveData.unknown1;
-                GlobalUnkown2NUD.Value = SaveData.unknown2;
+                NewSaveCB.Checked = SaveData.NewSave != 0;
 
-                MSPNUD.Value = SaveData.Saves[CurSave].MSHolograms;
-                LivesNUD.Value = SaveData.Saves[CurSave].Lives;
-                StageList.SelectedIndex = SaveData.Saves[CurSave].LevelID;
-                CharLB.SelectedIndex = SaveData.Saves[CurSave].CharacterID;
-                Score1NUD.Value = SaveData.Saves[CurSave].Score[3];
-                Score2NUD.Value = SaveData.Saves[CurSave].Score[2];
-                Score3NUD.Value = SaveData.Saves[CurSave].Score[1];
-                Score4NUD.Value = SaveData.Saves[CurSave].Score[0];
-                SaveUnknown2NUD.Value = SaveData.Saves[CurSave].unknown2;
-                GF1NUD.Value = SaveData.Saves[CurSave].GoodFutures[0];
-                GF2NUD.Value = SaveData.Saves[CurSave].GoodFutures[1];
-                GF3NUD.Value = SaveData.Saves[CurSave].GoodFutures[2];
-                GF4NUD.Value = SaveData.Saves[CurSave].GoodFutures[3];
-                RGNUD.Value = SaveData.Saves[CurSave].RoboMachines;
+                MSPNUD.Value = SaveData.FuturesSaved;
+                LivesNUD.Value = SaveData.Lives;
+                StageList.SelectedIndex = SaveData.ZoneID;
+                CharLB.SelectedIndex = SaveData.CharacterID;
+                Score1NUD.Value = SaveData.Score;
+                UnknownValueNUD.Value = SaveData.unknown3;
+                //GF1NUD.Value = SaveData.GoodFutures;
 
-                Timestone1.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 0);
-                Timestone2.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 1);
-                Timestone3.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 2);
-                Timestone4.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 3);
-                Timestone5.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 4);
-                Timestone6.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 5);
-                Timestone7.Checked = IsBitSet(SaveData.Saves[CurSave].TimeStones, 6);
+                Timestone1.Checked = IsBitSet(SaveData.TimeStones, 0);
+                Timestone2.Checked = IsBitSet(SaveData.TimeStones, 1);
+                Timestone3.Checked = IsBitSet(SaveData.TimeStones, 2);
+                Timestone4.Checked = IsBitSet(SaveData.TimeStones, 3);
+                Timestone5.Checked = IsBitSet(SaveData.TimeStones, 4);
+                Timestone6.Checked = IsBitSet(SaveData.TimeStones, 5);
+                Timestone7.Checked = IsBitSet(SaveData.TimeStones, 6);
             }
 
         }
@@ -190,7 +180,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].MSHolograms = (ushort)MSPNUD.Value;
+                SaveData.FuturesSaved = (ushort)MSPNUD.Value;
             }
         }
 
@@ -198,7 +188,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                CurSave = 0;
+                SaveData.SaveFile = 0;
                 RefreshUI();
             }
         }
@@ -207,7 +197,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                CurSave = 1;
+                SaveData.SaveFile = 1;
                 RefreshUI();
             }
         }
@@ -216,7 +206,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                CurSave = 2;
+                SaveData.SaveFile = 2;
                 RefreshUI();
             }
         }
@@ -225,16 +215,8 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                CurSave = 3;
+                SaveData.SaveFile = 3;
                 RefreshUI();
-            }
-        }
-
-        private void SaveUnknown2NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].unknown2 = (byte)SaveUnknown2NUD.Value;
             }
         }
 
@@ -242,31 +224,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].Score[3] = (byte)Score1NUD.Value;
-            }
-        }
-
-        private void Score2NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].Score[2] = (byte)Score2NUD.Value;
-            }
-        }
-
-        private void Score3NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].Score[1] = (byte)Score3NUD.Value;
-            }
-        }
-
-        private void Score4NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].Score[0] = (byte)Score4NUD.Value;
+                SaveData.Score = (int)Score1NUD.Value;
             }
         }
 
@@ -274,15 +232,9 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.unknown1 = (byte)GlobalUnkownNUD.Value;
-            }
-        }
-
-        private void GlobalUnkown2NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.unknown2 = (byte)GlobalUnkown2NUD.Value;
+                int i = 0;
+                if (NewSaveCB.Checked) i = 1;
+                SaveData.NewSave = i;
             }
         }
 
@@ -290,31 +242,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].GoodFutures[0] = (byte)GF1NUD.Value;
-            }
-        }
-
-        private void GF2NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].GoodFutures[1] = (byte)GF2NUD.Value;
-            }
-        }
-
-        private void GF3NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].GoodFutures[2] = (byte)GF3NUD.Value;
-            }
-        }
-
-        private void GF4NUD_ValueChanged(object sender, EventArgs e)
-        {
-            if (SaveData != null)
-            {
-                SaveData.Saves[CurSave].GoodFutures[3] = (byte)GF4NUD.Value;
+                SaveData.GoodFutures = (byte)GF1NUD.Value;
             }
         }
 
@@ -327,7 +255,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(0, Timestone1.Checked);
+                SaveData.SetTimeStone(0, Timestone1.Checked);
                 RefreshUI();
             }
         }
@@ -336,7 +264,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(1, Timestone2.Checked);
+                SaveData.SetTimeStone(1, Timestone2.Checked);
                 RefreshUI();
             }
         }
@@ -345,7 +273,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(2, Timestone3.Checked);
+                SaveData.SetTimeStone(2, Timestone3.Checked);
                 RefreshUI();
             }
         }
@@ -354,7 +282,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(3, Timestone4.Checked);
+                SaveData.SetTimeStone(3, Timestone4.Checked);
                 RefreshUI();
             }
         }
@@ -363,7 +291,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(4, Timestone5.Checked);
+                SaveData.SetTimeStone(4, Timestone5.Checked);
                 RefreshUI();
             }
         }
@@ -372,7 +300,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(5, Timestone6.Checked);
+                SaveData.SetTimeStone(5, Timestone6.Checked);
                 RefreshUI();
             }
         }
@@ -381,7 +309,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(6, Timestone7.Checked);
+                SaveData.SetTimeStone(6, Timestone7.Checked);
                 RefreshUI();
             }
         }
@@ -390,13 +318,13 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].SetTimeStone(0, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(1, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(2, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(3, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(4, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(5, AllTimestones.Checked);
-                SaveData.Saves[CurSave].SetTimeStone(6, AllTimestones.Checked);
+                SaveData.SetTimeStone(0, AllTimestones.Checked);
+                SaveData.SetTimeStone(1, AllTimestones.Checked);
+                SaveData.SetTimeStone(2, AllTimestones.Checked);
+                SaveData.SetTimeStone(3, AllTimestones.Checked);
+                SaveData.SetTimeStone(4, AllTimestones.Checked);
+                SaveData.SetTimeStone(5, AllTimestones.Checked);
+                SaveData.SetTimeStone(6, AllTimestones.Checked);
                 RefreshUI();
             }
         }
@@ -405,7 +333,7 @@ namespace Sonic_CD_SaveED
         {
             if (SaveData != null)
             {
-                SaveData.Saves[CurSave].RoboMachines = (ushort)RGNUD.Value;
+                //SaveData.RoboMachines = (ushort)RGNUD.Value;
             }
         }
 
@@ -432,9 +360,27 @@ namespace Sonic_CD_SaveED
                 }
                 path = Path.Combine(path, "Sdata.bin");
                 Filepath = path;
-                SaveData = new RSDKv3.SaveFiles(path);
+                SaveData = new RSDKv2.SaveFiles(path);
                 RefreshUI();
             }
+        }
+
+        private void NewSaveCB_CheckedChanged(object sender, EventArgs e)
+        {
+            int i = 0;
+            if (NewSaveCB.Checked) i = 1;
+            SaveData.NewSave = i;
+        }
+
+        private void NextSSBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (NextSSBox.SelectedIndex < 0) NextSSBox.SelectedIndex = 0;
+            SaveData.SpecialZoneID = NextSSBox.SelectedIndex;
+        }
+
+        private void UnknownValueNUD_ValueChanged(object sender, EventArgs e)
+        {
+            SaveData.unknown3 = (int)UnknownValueNUD.Value;
         }
     }
 }

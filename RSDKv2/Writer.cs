@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using zlib;
 
-namespace RSDKv3
+namespace RSDKv2
 {
     public class Writer : BinaryWriter
     {
